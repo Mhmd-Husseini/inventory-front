@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext, ReactNode, useEffect } from 'react';
-import { AuthState, AuthAction, AuthActionTypes, User } from '../types/auth';
+import { AuthState, AuthAction, AuthActionTypes } from '../types/auth';
 import * as authService from '../services/authService';
 
 const token = localStorage.getItem('token');

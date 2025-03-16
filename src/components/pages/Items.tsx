@@ -149,13 +149,11 @@ const Items: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      let response;
-      
       if (formItem.id) {
-        response = await updateItem(formItem.id, formItem);
+        await updateItem(formItem.id, formItem);
         toast.success('Item updated successfully');
       } else {
-        response = await createItem({
+        await createItem({
           product_type_id: productTypeIdNumber,
           serial_number: formItem.serial_number!,
           is_sold: formItem.is_sold || false

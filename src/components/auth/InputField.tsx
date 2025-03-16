@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, ReactNode } from 'react';
+import React, { ChangeEvent, ReactNode } from 'react';
 import '../../styles/components/InputField.css';
 
 interface InputFieldProps {
@@ -25,8 +25,6 @@ const InputField: React.FC<InputFieldProps> = ({
   error,
   className = '',
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-
   return (
     <div className={`input-field-container ${className}`}>
       <label 
@@ -44,8 +42,8 @@ const InputField: React.FC<InputFieldProps> = ({
           onChange={onChange}
           required={required}
           placeholder={placeholder}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onFocus={() => {}}
+          onBlur={() => {}}
           className={`input-element ${error ? 'input-error' : ''}`}
         />
         {error && (

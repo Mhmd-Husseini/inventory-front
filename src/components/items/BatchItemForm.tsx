@@ -16,7 +16,6 @@ const BatchItemForm: React.FC<BatchItemFormProps> = ({
   onClose,
   onSubmit,
   isLoading,
-  productTypeId
 }) => {
   const [serialNumbersText, setSerialNumbersText] = useState('');
   const [error, setError] = useState('');
