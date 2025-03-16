@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import '../../styles/pages/PageStyles.css';
 import Table from '../common/Table';
@@ -10,13 +11,14 @@ import { ProductType } from '../../types/productType';
 import * as productTypeService from '../../services/productTypeService';
 
 const ProductTypes: React.FC = () => {
+  const navigate = useNavigate();
   const [productTypes, setProductTypes] = useState<ProductType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({
     total: 0,
-    perPage: 10,
+    perPage: 15,
     currentPage: 1,
     lastPage: 1,
   });
@@ -66,14 +68,22 @@ const ProductTypes: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleEditClick = (productType: ProductType) => {
+  const handleEditClick = (productType: ProductType, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent row click event
     setSelectedProductType(productType);
     setIsFormOpen(true);
   };
 
-  const handleDeleteClick = (productType: ProductType) => {
+  const handleDeleteClick = (productType: ProductType, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent row click event
     setProductTypeToDelete(productType);
     setIsDeleteModalOpen(true);
+  };
+
+  const handleRowClick = (productType: ProductType) => {
+    if (productType.id) {
+      navigate(`/dashboard/product-types/${productType.id}/items`);
+    }
   };
 
   const handleFormSubmit = async (productType: ProductType, image: File | null) => {
@@ -189,7 +199,7 @@ const ProductTypes: React.FC = () => {
       render: (item: ProductType) => (
         <div className="action-buttons">
           <button
-            onClick={() => handleEditClick(item)}
+            onClick={(e) => handleEditClick(item, e)}
             className="action-button edit"
             title="Edit"
           >
@@ -202,7 +212,7 @@ const ProductTypes: React.FC = () => {
             </svg>
           </button>
           <button
-            onClick={() => handleDeleteClick(item)}
+            onClick={(e) => handleDeleteClick(item, e)}
             className="action-button delete"
             title="Delete"
           >
@@ -256,6 +266,7 @@ const ProductTypes: React.FC = () => {
         keyExtractor={(item) => item.id?.toString() || ''}
         isLoading={isLoading}
         emptyMessage="No product types found. Create your first one!"
+        onRowClick={handleRowClick}
       />
 
       <ProductTypeForm

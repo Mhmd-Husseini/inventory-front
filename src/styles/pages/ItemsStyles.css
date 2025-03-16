@@ -1,0 +1,101 @@
+.items-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.items-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: #4b5563;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  transition: color 0.2s;
+}
+
+.back-button:hover {
+  color: #2563eb;
+}
+
+.back-button svg {
+  transition: transform 0.2s;
+}
+
+.back-button:hover svg {
+  transform: translateX(-2px);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.item-count {
+  font-size: 0.875rem;
+  font-weight: normal;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.items-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.serial-number-cell {
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.sold-checkbox-cell {
+  display: flex;
+  justify-content: center;
+}
+
+.sold-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s;
+}
+
+.sold-checkbox:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .items-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .items-controls {
+    width: 100%;
+  }
+} 

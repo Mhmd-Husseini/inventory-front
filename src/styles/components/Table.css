@@ -45,6 +45,17 @@
   background-color: #f9fafb;
 }
 
+.clickable-row {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: #f3f4f6 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
 .empty-message {
   text-align: center;
   color: #6b7280;

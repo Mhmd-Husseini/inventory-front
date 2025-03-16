@@ -23,6 +23,7 @@ interface TableProps<T> {
   keyExtractor: (item: T) => string | number;
   isLoading?: boolean;
   emptyMessage?: string;
+  onRowClick?: (item: T) => void;
 }
 
 function Table<T>({
@@ -32,7 +33,8 @@ function Table<T>({
   onPageChange,
   keyExtractor,
   isLoading = false,
-  emptyMessage = 'No data available'
+  emptyMessage = 'No data available',
+  onRowClick
 }: TableProps<T>) {
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -115,7 +117,11 @@ function Table<T>({
               <tbody>
                 {data.length > 0 ? (
                   data.map((item) => (
-                    <tr key={keyExtractor(item)}>
+                    <tr 
+                      key={keyExtractor(item)} 
+                      onClick={() => onRowClick && onRowClick(item)}
+                      className={onRowClick ? 'clickable-row' : ''}
+                    >
                       {columns.map((column) => (
                         <td key={`${keyExtractor(item)}-${column.key}`}>
                           {column.render
