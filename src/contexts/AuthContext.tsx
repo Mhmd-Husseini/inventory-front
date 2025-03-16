@@ -2,10 +2,25 @@ import { createContext, useReducer, useContext, ReactNode, useEffect } from 'rea
 import { AuthState, AuthAction, AuthActionTypes, User } from '../types/auth';
 import * as authService from '../services/authService';
 
+const token = localStorage.getItem('token');
+const userString = localStorage.getItem('user');
+let initialUser = null;
+let isInitiallyAuthenticated = false;
+
+try {
+  if (token && userString) {
+    initialUser = JSON.parse(userString);
+    isInitiallyAuthenticated = true;
+  }
+} catch (err) {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+}
+
 const initialState: AuthState = {
-  user: null,
-  token: localStorage.getItem('token') || null,
-  isAuthenticated: false,
+  user: initialUser,
+  token: token,
+  isAuthenticated: isInitiallyAuthenticated,
   isLoading: false,
   error: null,
 };
@@ -72,21 +87,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userString = localStorage.getItem('user');
-    
-    if (token && userString) {
-      try {
-        const user: User = JSON.parse(userString);
-        dispatch({
-          type: AuthActionTypes.LOGIN_SUCCESS,
-          payload: { user, token },
-        });
-      } catch (err) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-      }
-    }
   }, []);
 
   const login = async (email: string, password: string) => {
