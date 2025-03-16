@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../common/Button';
+import BarcodeScanner from './BarcodeScanner';
 import '../../styles/components/ProductTypeForm.css';
 
 interface BatchItemFormProps {
@@ -19,6 +20,7 @@ const BatchItemForm: React.FC<BatchItemFormProps> = ({
 }) => {
   const [serialNumbersText, setSerialNumbersText] = useState('');
   const [error, setError] = useState('');
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +48,16 @@ const BatchItemForm: React.FC<BatchItemFormProps> = ({
     } catch (err) {
       setError('Failed to save items. Please try again.');
     }
+  };
+
+  const handleScanBarcode = () => {
+    setIsScannerOpen(true);
+  };
+
+  const handleScanResult = (result: string) => {
+    const newText = serialNumbersText ? `${serialNumbersText}\n${result}` : result;
+    setSerialNumbersText(newText);
+    setIsScannerOpen(false);
   };
 
   if (!isOpen) return null;
@@ -80,10 +92,28 @@ const BatchItemForm: React.FC<BatchItemFormProps> = ({
           {error && <div className="error-message">{error}</div>}
           
           <div className="form-group">
-            <label htmlFor="serialNumbers">
-              Serial Numbers <span className="required">*</span>
-              <span className="helper-text"> (One per line)</span>
-            </label>
+            <div className="label-with-action">
+              <label htmlFor="serialNumbers">
+                Serial Numbers <span className="required">*</span>
+                <span className="helper-text"> (One per line)</span>
+              </label>
+              <button 
+                type="button" 
+                className="scan-button" 
+                onClick={handleScanBarcode}
+                disabled={isLoading}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="20" height="20">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 9V5a2 2 0 012-2h.93a2 2 0 011.664.89l.812 1.22A2 2 0 0110.07 6H20a2 2 0 012 2v10a2 2 0 01-2 2H8.5a2 2 0 01-1.414-.586m0 0L3 14.5V9a2 2 0 00.879-1.707"
+                  />
+                </svg>
+                Scan Barcode
+              </button>
+            </div>
             <textarea
               id="serialNumbers"
               className={error ? 'input-error' : ''}
@@ -110,6 +140,7 @@ const BatchItemForm: React.FC<BatchItemFormProps> = ({
             <h4>Instructions:</h4>
             <ul>
               <li>Enter one serial number per line</li>
+              <li>Use the scan button to add barcodes directly from your camera</li>
               <li>Duplicate serial numbers will be ignored</li>
               <li>Empty lines will be skipped</li>
               <li>Leading and trailing spaces will be trimmed</li>
@@ -134,6 +165,15 @@ const BatchItemForm: React.FC<BatchItemFormProps> = ({
             </Button>
           </div>
         </form>
+
+        {isScannerOpen && (
+          <div className="scanner-modal">
+            <BarcodeScanner 
+              onResult={handleScanResult} 
+              onClose={() => setIsScannerOpen(false)} 
+            />
+          </div>
+        )}
       </div>
     </div>
   );

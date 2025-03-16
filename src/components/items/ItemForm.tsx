@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Item } from '../../services/itemService';
 import Button from '../common/Button';
+import BarcodeScanner from './BarcodeScanner';
 import '../../styles/components/ProductTypeForm.css';
 
 interface ItemFormProps {
@@ -23,6 +24,7 @@ const ItemForm: React.FC<ItemFormProps> = ({
   const [serialNumber, setSerialNumber] = useState('');
   const [isSold, setIsSold] = useState(false);
   const [error, setError] = useState('');
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   useEffect(() => {
     if (item) {
@@ -33,6 +35,7 @@ const ItemForm: React.FC<ItemFormProps> = ({
       setIsSold(false);
     }
     setError('');
+    setIsScannerOpen(false);
   }, [item, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,6 +57,19 @@ const ItemForm: React.FC<ItemFormProps> = ({
       onClose();
     } catch (err) {
       setError('Failed to save item. Please try again.');
+    }
+  };
+
+  const handleScanBarcode = () => {
+    setIsScannerOpen(true);
+  };
+
+  const handleScanResult = (result: string) => {
+    setSerialNumber(result);
+    setIsScannerOpen(false);
+    const soldCheckbox = document.getElementById('isSold');
+    if (soldCheckbox) {
+      (soldCheckbox as HTMLInputElement).focus();
     }
   };
 
@@ -85,15 +101,33 @@ const ItemForm: React.FC<ItemFormProps> = ({
             <label htmlFor="serialNumber">
               Serial Number <span className="required">*</span>
             </label>
-            <input
-              id="serialNumber"
-              type="text"
-              className={error ? 'input-error' : ''}
-              value={serialNumber}
-              onChange={(e) => setSerialNumber(e.target.value)}
-              disabled={isLoading}
-              placeholder="Enter item serial number"
-            />
+            <div className="input-with-button">
+              <input
+                id="serialNumber"
+                type="text"
+                className={error ? 'input-error' : ''}
+                value={serialNumber}
+                onChange={(e) => setSerialNumber(e.target.value)}
+                disabled={isLoading}
+                placeholder="Enter item serial number"
+              />
+              <button 
+                type="button" 
+                className="scan-button" 
+                onClick={handleScanBarcode}
+                disabled={isLoading}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="20" height="20">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 9V5a2 2 0 012-2h.93a2 2 0 011.664.89l.812 1.22A2 2 0 0110.07 6H20a2 2 0 012 2v10a2 2 0 01-2 2H8.5a2 2 0 01-1.414-.586m0 0L3 14.5V9a2 2 0 00.879-1.707"
+                  />
+                </svg>
+                Scan Barcode
+              </button>
+            </div>
           </div>
 
           <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
@@ -128,6 +162,15 @@ const ItemForm: React.FC<ItemFormProps> = ({
             </Button>
           </div>
         </form>
+
+        {isScannerOpen && (
+          <div className="scanner-modal">
+            <BarcodeScanner 
+              onResult={handleScanResult} 
+              onClose={() => setIsScannerOpen(false)} 
+            />
+          </div>
+        )}
       </div>
     </div>
   );
