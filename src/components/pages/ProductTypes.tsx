@@ -106,6 +106,7 @@ const ProductTypes: React.FC = () => {
             description: productType.description,
             current_stocks: 0,
             image_path: null,
+            image_url: null,
           },
           image
         );
@@ -148,12 +149,12 @@ const ProductTypes: React.FC = () => {
     { 
       header: 'Image', 
       key: 'image_path', 
-      width: '200px',
+      width: '90px',
       render: (item: ProductType) => (
         <div className="product-image-cell">
-          {item.image_path ? (
+          {item.image_url ? (
             <img 
-              src={item.image_path} 
+              src={item.image_url} 
               alt={item.name} 
               className="product-thumbnail" 
             />

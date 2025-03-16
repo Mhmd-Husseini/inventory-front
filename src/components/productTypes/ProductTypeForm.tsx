@@ -30,7 +30,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
     if (productType) {
       setName(productType.name || '');
       setDescription(productType.description || '');
-      setImagePreview(productType.image_path || null);
+      setImagePreview(productType.image_url || null);
     } else {
       setName('');
       setDescription('');
@@ -66,8 +66,9 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
       ...(productType?.id ? { id: productType.id } : {}),
       name,
       description,
-      current_stocks: 0,
+      current_stocks: productType?.current_stocks || 0,
       image_path: productType?.image_path || null,
+      image_url: productType?.image_url || null,
     };
     
     await onSubmit(formData, image);
@@ -84,7 +85,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
       };
       reader.readAsDataURL(file);
     } else {
-      setImagePreview(productType?.image_path || null);
+      setImagePreview(productType?.image_url || null);
     }
   };
 
