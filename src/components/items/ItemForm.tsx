@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Item } from '../../services/itemService';
 import Button from '../common/Button';
-import '../../styles/components/Form.css';
 import '../../styles/components/ProductTypeForm.css';
 
 interface ItemFormProps {

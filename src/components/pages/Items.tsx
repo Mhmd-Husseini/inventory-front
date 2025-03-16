@@ -7,7 +7,7 @@ import Button from '../common/Button';
 import SearchInput from '../common/SearchInput';
 import ConfirmationModal from '../common/ConfirmationModal';
 import ItemForm from '../items/ItemForm';
-import { Item, getItems, createItem, updateItem, deleteItem } from '../../services/itemService';
+import { Item, getItems, createItem, updateItem, deleteItem, toggleItemSold } from '../../services/itemService';
 import { getProductType } from '../../services/productTypeService';
 import { ProductType } from '../../types/productType';
 
@@ -104,23 +104,24 @@ const Items: React.FC = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleSoldChange = async (item: Item, isSold: boolean) => {
+  const handleSoldChange = async (item: Item) => {
     try {
-      await updateItem(item.id!, { is_sold: isSold });
+      const response = await toggleItemSold(item.id!);
       
+      const updatedItem = response.data;
       setItems(prevItems => 
-        prevItems.map(i => i.id === item.id ? { ...i, is_sold: isSold } : i)
+        prevItems.map(i => i.id === item.id ? updatedItem : i)
       );
       
       if (productType && productType.id) {
-        const countChange = isSold ? -1 : 1;
+        const countChange = updatedItem.is_sold ? -1 : 1;
         setProductType({
           ...productType,
           current_stocks: (productType.current_stocks || 0) + countChange
         });
       }
       
-      toast.success(`Item marked as ${isSold ? 'sold' : 'available'}`);
+      toast.success(`Item marked as ${updatedItem.is_sold ? 'sold' : 'available'}`);
     } catch (error) {
       console.error('Error updating item sold status:', error);
       toast.error('Failed to update item. Please try again.');
@@ -215,7 +216,7 @@ const Items: React.FC = () => {
           <input
             type="checkbox"
             checked={item.is_sold}
-            onChange={(e) => handleSoldChange(item, e.target.checked)}
+            onChange={() => handleSoldChange(item)}
             className="sold-checkbox"
           />
         </div>

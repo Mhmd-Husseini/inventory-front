@@ -145,4 +145,27 @@ export const deleteItem = async (id: number): Promise<ItemResponse> => {
   }
 
   return await response.json();
+};
+
+export const toggleItemSold = async (id: number): Promise<ItemResponse> => {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    throw new Error('Authentication token not found');
+  }
+
+  const response = await fetch(`${API_URL}/items/${id}/toggle-sold`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to toggle item sold status');
+  }
+
+  return await response.json();
 }; 
