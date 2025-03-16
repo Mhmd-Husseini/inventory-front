@@ -155,7 +155,7 @@ export const updateProductType = async (
   return await response.json();
 };
 
-export const deleteProductType = async (id: number): Promise<ProductTypeResponse> => {
+export const deleteProductType = async (id: number): Promise<void> => {
   const token = localStorage.getItem('token');
   
   if (!token) {
@@ -171,9 +171,13 @@ export const deleteProductType = async (id: number): Promise<ProductTypeResponse
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to delete product type');
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete product type');
+    } catch (e) {
+      throw new Error('Failed to delete product type');
+    }
   }
-
-  return await response.json();
+  
+  return;
 }; 

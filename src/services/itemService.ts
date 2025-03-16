@@ -124,7 +124,7 @@ export const updateItem = async (
   return await response.json();
 };
 
-export const deleteItem = async (id: number): Promise<ItemResponse> => {
+export const deleteItem = async (id: number): Promise<void> => {
   const token = localStorage.getItem('token');
   
   if (!token) {
@@ -140,11 +140,15 @@ export const deleteItem = async (id: number): Promise<ItemResponse> => {
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to delete item');
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete item');
+    } catch (e) {
+      throw new Error('Failed to delete item');
+    }
   }
-
-  return await response.json();
+  
+  return;
 };
 
 export const toggleItemSold = async (id: number): Promise<ItemResponse> => {
