@@ -2,7 +2,7 @@
   grid-area: sidebar;
   background-color: #1e293b;
   color: #f3f4f6;
-  height: 100vh;
+  min-height: 100vh;
   z-index: 10;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
