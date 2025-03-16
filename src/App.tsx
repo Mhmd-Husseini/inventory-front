@@ -2,9 +2,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './components/auth/LoginPage';
 import RegisterPage from './components/auth/RegisterPage';
-import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/auth/PrivateRoute';
-import './styles/App.css';
+import DashboardLayout from './components/layout/DashboardLayout';
+import ProductTypes from './components/pages/ProductTypes';
+import Items from './components/pages/Items';
+import './App.css';
 
 function App() {
   return (
@@ -16,7 +18,11 @@ function App() {
           
           {/* Protected routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<Navigate to="/dashboard/product-types" replace />} />
+              <Route path="product-types" element={<ProductTypes />} />
+              <Route path="items" element={<Items />} />
+            </Route>
           </Route>
           
           {/* Redirect to dashboard if logged in, otherwise to login */}
