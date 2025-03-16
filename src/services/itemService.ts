@@ -168,4 +168,44 @@ export const toggleItemSold = async (id: number): Promise<ItemResponse> => {
   }
 
   return await response.json();
+};
+
+export interface BatchCreateItemsRequest {
+  product_type_id: number;
+  serial_numbers: string[];
+}
+
+export interface BatchCreateItemsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    created: number;
+    items: Item[];
+  };
+}
+
+export const batchCreateItems = async (
+  request: BatchCreateItemsRequest
+): Promise<BatchCreateItemsResponse> => {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    throw new Error('Authentication token not found');
+  }
+
+  const response = await fetch(`${API_URL}/items/batch`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to batch create items');
+  }
+
+  return await response.json();
 }; 

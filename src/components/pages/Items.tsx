@@ -7,7 +7,16 @@ import Button from '../common/Button';
 import SearchInput from '../common/SearchInput';
 import ConfirmationModal from '../common/ConfirmationModal';
 import ItemForm from '../items/ItemForm';
-import { Item, getItems, createItem, updateItem, deleteItem, toggleItemSold } from '../../services/itemService';
+import BatchItemForm from '../items/BatchItemForm';
+import { 
+  Item, 
+  getItems, 
+  createItem, 
+  updateItem, 
+  deleteItem, 
+  toggleItemSold,
+  batchCreateItems
+} from '../../services/itemService';
 import { getProductType } from '../../services/productTypeService';
 import { ProductType } from '../../types/productType';
 
@@ -27,8 +36,10 @@ const Items: React.FC = () => {
   });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isBatchFormOpen, setIsBatchFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
   
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
@@ -92,6 +103,10 @@ const Items: React.FC = () => {
   const handleAddClick = () => {
     setSelectedItem(undefined);
     setIsFormOpen(true);
+  };
+
+  const handleBatchAddClick = () => {
+    setIsBatchFormOpen(true);
   };
 
   const handleEditClick = (item: Item) => {
@@ -163,6 +178,35 @@ const Items: React.FC = () => {
       toast.error('Failed to save item. Please try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleBatchSubmit = async (serialNumbers: string[]) => {
+    if (!productTypeId) return;
+    const productTypeIdNumber = parseInt(productTypeId);
+    
+    setIsBatchSubmitting(true);
+    try {
+      const response = await batchCreateItems({
+        product_type_id: productTypeIdNumber,
+        serial_numbers: serialNumbers
+      });
+      
+      toast.success(`Successfully added ${response.data.created} items`);
+      
+      if (productType) {
+        setProductType({
+          ...productType,
+          current_stocks: (productType.current_stocks || 0) + response.data.created
+        });
+      }
+      
+      fetchItems();
+    } catch (error) {
+      console.error('Error batch creating items:', error);
+      toast.error('Failed to add items. Please try again.');
+    } finally {
+      setIsBatchSubmitting(false);
     }
   };
 
@@ -280,27 +324,47 @@ const Items: React.FC = () => {
           </h1>
         </div>
         <div className="items-controls">
-          <SearchInput
-            value={searchTerm}
-            onChange={handleSearchChange}
-            placeholder="Search by serial number..."
-          />
-          <Button
-            variant="primary"
-            onClick={handleAddClick}
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-            }
-          >
-            Add Item
-          </Button>
+          <div className="search-wrapper">
+            <SearchInput
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Search by serial number..."
+            />
+          </div>
+          <div className="button-group">
+            <Button
+              variant="secondary"
+              onClick={handleBatchAddClick}
+              icon={
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+              }
+            >
+              Batch Add
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleAddClick}
+              icon={
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+              }
+            >
+              Add Item
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -315,14 +379,24 @@ const Items: React.FC = () => {
       />
 
       {productTypeId && (
-        <ItemForm
-          isOpen={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
-          onSubmit={handleFormSubmit}
-          isLoading={isSubmitting}
-          productTypeId={parseInt(productTypeId)}
-          item={selectedItem}
-        />
+        <>
+          <ItemForm
+            isOpen={isFormOpen}
+            onClose={() => setIsFormOpen(false)}
+            onSubmit={handleFormSubmit}
+            isLoading={isSubmitting}
+            productTypeId={parseInt(productTypeId)}
+            item={selectedItem}
+          />
+          
+          <BatchItemForm
+            isOpen={isBatchFormOpen}
+            onClose={() => setIsBatchFormOpen(false)}
+            onSubmit={handleBatchSubmit}
+            isLoading={isBatchSubmitting}
+            productTypeId={parseInt(productTypeId)}
+          />
+        </>
       )}
 
       <ConfirmationModal

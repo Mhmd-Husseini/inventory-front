@@ -234,27 +234,31 @@ const ProductTypes: React.FC = () => {
       <div className="product-types-header">
         <h1 className="page-title">Product Types</h1>
         <div className="product-types-controls">
-          <SearchInput
-            value={searchTerm}
-            onChange={handleSearchChange}
-            placeholder="Search by name..."
-          />
-          <Button
-            variant="primary"
-            onClick={handleAddClick}
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-            }
-          >
-            Add Product Type
-          </Button>
+          <div className="search-wrapper">
+            <SearchInput
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Search by name..."
+            />
+          </div>
+          <div className="button-group">
+            <Button
+              variant="primary"
+              onClick={handleAddClick}
+              icon={
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+              }
+            >
+              Add Product Type
+            </Button>
+          </div>
         </div>
       </div>
 

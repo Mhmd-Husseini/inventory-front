@@ -22,4 +22,42 @@
 .placeholder-card p {
   margin-bottom: 0.75rem;
   max-width: 500px;
+}
+
+.product-types-controls, .items-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-wrapper {
+  flex: 1;
+  max-width: 300px;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .product-types-controls, .items-controls {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+  
+  .search-wrapper {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 0.5rem;
+  }
+  
+  .button-group {
+    margin-left: 0;
+    flex-direction: column;
+    width: 100%;
+  }
 } 
